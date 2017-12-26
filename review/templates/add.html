@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>添加用户</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../static/bs/bootstrap.min.css">
+    <script type="text/javascript" src="../static/bs/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/bs/bootstrap.min.js"></script>
+
+</head>
+<body>
+{% include "header.html" %}
+<div id="container">
+
+    <div class="container">
+        <h2>添加部门</h2>
+        <form action="/add01?d_id={{ d_id }}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="name">部门名称:</label>
+                <input type="text" class="form-control" id="name" placeholder="请输入部门名称" name="name"
+                       value="{{ department_value }}">
+            </div>
+            {% if d_id > 0 %}
+                <button type="submit" class="btn btn-primary">修改</button>
+            {% else %}
+                <button type="submit" class="btn btn-primary">添加</button>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="container">
+        <h2>添加人员</h2>
+        <form action="/add02?u_id={{ u_id }}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="pwd">姓名:</label>
+                <input type="text" class="form-control" id="pwd" placeholder="请输入姓名" name="name"
+                       value="{{ user_value.name }}">
+            </div>
+            <div class="form-group">
+                <label for="pwd">邮箱:</label>
+                <input type="email" class="form-control" id="pwd" placeholder="请输入工作邮箱" name="email"
+                       value="{{ user_value.email }}">
+            </div>
+            <div class="form-group">
+                <label for="email">选择部门:</label>
+                <select name="de">
+                    {% for d in department %}
+                        {% if d.name == user_value.deparment %}
+                            <option value="{{ d.name }}" selected>{{ d.name }}</option>
+                        {% else %}
+                            <option value="{{ d.name }}">{{ d.name }}</option>
+                        {% endif %}
+
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+
+                {% if user_value.bz == 1 %}
+                    <input type="radio" name="bz" value="0">否
+                    <input type="radio" name="bz" value="1" checked="checked">班子
+                    <input type="radio" name="bz" value="2">中层
+                {% elif user_value.bz == 2 %}
+                    <input type="radio" name="bz" value="0">否
+                    <input type="radio" name="bz" value="1">班子
+                    <input type="radio" name="bz" value="2" checked="checked">中层
+                {% else %}
+                    <input type="radio" name="bz" value="0" checked="checked">否
+                    <input type="radio" name="bz" value="1">班子
+                    <input type="radio" name="bz" value="2">中层
+                {% endif %}
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" disabled="disabled" checked="checked"> 默认密码为1
+                </label>
+            </div>
+        {% if u_id > 0 %}
+            <button type="submit" class="btn btn-primary">修改</button>
+            {% else %}
+            <button type="submit" class="btn btn-primary">添加</button>
+        {% endif %}
+        </form>
+    </div>
+</div>
+</body>
+</html>
