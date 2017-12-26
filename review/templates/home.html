@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>蓝血微评选(万银版权所有 2017-12-11)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../static/bs/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/alert/alert.css">
+    <script type="text/javascript" src="../static/bs/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/bs/bootstrap.min.js"></script>
+    <script src="../static/alert/alert.js"></script>
+    <style type="text/css">
+        .root {
+            padding: 5px;
+        }
+
+        .item p {
+            width: 100%;
+        }
+
+        .page-header {
+            margin-top: 10px;
+        }
+
+        h1 {
+            font-size: 30px;
+        }
+
+        label {
+            width: 13%;
+        }
+
+        select {
+            height: 30px;
+            width: 27%;
+        }
+
+        .btn {
+            width: 20%;
+        }
+
+        .form-control {
+            display: inline;
+            width: 28%;
+        }
+
+        .badge {
+            width: 6%;
+        }
+    </style>
+</head>
+<body>
+{% include "header.html" %}
+{% if in_name %}
+
+    <div class="root">
+        <div class="page-header">
+            <h1>{{ in_name }}
+                <small>匿名评选</small>
+            </h1>
+        </div>
+        <div class="item">
+
+            {% for u in user %}
+                <p>
+                <div>
+                    <label>{{ u.name }}</label>
+                    <select>
+                        <option class="tips"></option>
+                    </select>
+                    <input type="text" class="form-control" value="{{ u.score }}">
+                    <button id="{{ u.id }}" type="button" class="btn btn-info">提交</button>
+                    <span class="badge">{{ u.count }}</span>
+                </div>
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
+{% else %}
+
+    <h1 style="margin: 10px">暂无任何评选</h1>
+
+{% endif %}
+
+<script type="text/javascript">
+
+    var select_tip = "选择分数";
+    $(".tips").text(select_tip);
+
+    //记录人员分数
+    var score = 0;
+
+    $("select").each(function () {
+        for (var i = 100; i >= 0; i--) {
+            var o1 = document.createElement('option');
+            o1.value = i;
+            o1.innerText = i;
+            $(this).append(o1);
+        }
+    })
+
+    $("select").change(function () {
+        $(this).siblings("input").val($(this).val() == select_tip ? '' : $(this).val());
+    })
+
+
+    $(".item button").click(function () {
+        score = $(this).siblings("input").val();
+        var name = $(this).siblings("label").text();
+        if (score == '') {
+            console.log($(this).siblings());
+            $.alertView("请输入【" + name + "】的分数");
+        } else {
+            var that = this;
+            var json = {
+                title: "【" + name + "】" + "得分：" + score,
+                msg: "是否提交",
+                buttons: [
+                    {
+                        title: "取消", color: "red", click: function () {
+                    }
+                    },
+                    {
+                        title: "提交", click: function () {
+                        postScore(that);
+                    }
+                    }
+                ]
+            };
+
+            $.alertView(json);
+        }
+    })
+
+    function postScore(that) {
+        $.ajax({
+                url: "/add_score",
+                type: "get",
+                data: {
+                    "id": $(that).attr("id"),
+                    "score": score,
+                    "pid": {{ in_id }}
+                },
+                success: function (result) {
+                    console.log(result);
+                    var jsonObject = JSON.parse(result);
+                    //alert(jsonObjec.msg);
+                    if (JSON.parse(jsonObject.code) == 1) {
+                        var json = {
+                            title: "温馨提示",
+                            msg: "打分成功,是否刷新页面",
+                            buttons: [
+                                {
+                                    title: "取消", color: "red", click: function () {
+                                }
+                                },
+                                {
+                                    title: "刷新", click: function () {
+                                    window.location.reload();
+                                }
+                                }
+                            ]
+                        };
+                    } else {
+                        var json = {
+                            title: "温馨提示",
+                            msg: jsonObject.msg,
+                            buttons: [
+                                {
+                                    title: "记住了", color: "red", click: function () {
+
+                                }
+
+                                }
+                            ]
+                        }
+                    }
+
+
+                    $.alertView(json);
+                }
+            }
+        );
+    }
+
+</script>
+</body>
+</html>

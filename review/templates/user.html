@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>用户及部门管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../static/bs/bootstrap.min.css">
+    <script type="text/javascript" src="../static/bs/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/bs/bootstrap.min.js"></script>
+
+</head>
+<body>
+
+{% include "header.html" %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <h2>部门管理</h2>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>部门</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for d in de %}
+                    <tr>
+                        <td>{{ d.name }}</td>
+                        <td><a href="/add?d_id={{ d.id }}&u_id=0">修改</a></td>
+                        <td>
+                            <a href="/de_del?id={{ d.id }}">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-9">
+            <h2>用户管理</h2>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>部门</th>
+                    <th>邮箱</th>
+                    <th>级别</th>
+                    <th>修改</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for u in user %}
+                    <tr>
+                        <td>{{ u.name }}</td>
+                        <td>{{ u.deparment }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            {% if u.bz == 0 %}
+                                无职位
+                            {% elif u.bz == 1 %}
+                                班子
+                            {% else %}
+                                中层
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="/add?d_id=0&u_id={{ u.id }}">修改</a>
+                        </td>
+                        <td>
+                            <a href="/user_del?id={{ u.id }}">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

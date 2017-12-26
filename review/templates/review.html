@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>用户及部门管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../static/bs/bootstrap.min.css">
+    <script type="text/javascript" src="../static/bs/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/bs/bootstrap.min.js"></script>
+
+</head>
+<body>
+{% include "header.html" %}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            <h2>新增评选</h2>
+            <form action="/add_review" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">主题名称:</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入主题名称" name="name">
+                </div>
+                <button type="submit" class="btn btn-primary">添加</button>
+            </form>
+
+        </div>
+        <div class="col-md-9">
+            <h2>评选管理</h2>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in review %}
+                    <tr>
+                        <td><a href="/result?c_id={{ r.id }}&name={{ r.name }}">{{ r.name }}</a></td>
+                        <td>{{ r.starttime}}</td>
+                        <td>{{ r.overtime }}</td>
+                        <td>
+                            <a href="/del_review?id={{ r.id }}">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
